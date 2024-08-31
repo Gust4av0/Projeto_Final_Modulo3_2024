@@ -1,4 +1,4 @@
-package projeto;
+package repositorio;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ConectorBanco {
+public class BancoDados {
 
     private static final String URL = "jdbc:mysql://localhost:3306/churrasco_do_ze";
     private static final String USER = "root";
