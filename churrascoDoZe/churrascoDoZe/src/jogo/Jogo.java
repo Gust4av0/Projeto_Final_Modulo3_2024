@@ -2,9 +2,13 @@ package jogo;
 
 import modelo.Cena;
 import modelo.Comando;
+import modelo.Save;
+import org.w3c.dom.ls.LSOutput;
 import repositorio.CenaDAO;
 import repositorio.ComandoDAO;
+import repositorio.SaveDAO;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Jogo {
@@ -12,9 +16,15 @@ public class Jogo {
     private static ComandoDAO comandoDAO = new ComandoDAO();  // Instância de ComandoDAO
     private static int cenaAtualId = 1; // Cena inicial
 
-    public static void main(String[] args) {
+    public Jogo() throws SQLException {
+    }
+
+    public static void main(String[] args) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         String comando;
+
+        Save save = SaveDAO.novoJogo();
+        System.out.println(save.getCenaAtual().getIdCena());
 
         System.out.println("Digite 'start' para iniciar o jogo ou 'help' para obter ajuda.");
 
@@ -42,7 +52,7 @@ public class Jogo {
         try {
             Cena cena = cenaDAO.findCenaById(idCena);
             if (cena != null) {
-                System.out.println("Descrição da Cena: " + cena.getDescricao());
+                System.out.println(cena.getDescricao()); //Mostra a cena 1 do jogo
             } else {
                 System.out.println("Cena não encontrada.");
             }
@@ -68,20 +78,6 @@ public class Jogo {
     private static void processarComando(String comando) {
         try {
             Comando comandoInfo = comandoDAO.findComandoByNome(comando);
-            if (comandoInfo != null) {
-                System.out.println("Descrição do comando '" + comando + "': " + comandoInfo.getDescricao());
-                if (comando.startsWith("use")) {
-                    // Aqui você pode adicionar a lógica para mudar de cena
-                    if (comando.equals("use mercado")) {
-                        cenaAtualId = 2; // Por exemplo, mudar para a cena 2
-                        mostrarCena(cenaAtualId);
-                    }
-                    // Adicione outros comandos de uso e lógica de mudança de cena conforme necessário
-                }
-                // Adicione lógica para outros comandos, como 'get', 'check', etc.
-            } else {
-                System.out.println("Comando não reconhecido.");
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
