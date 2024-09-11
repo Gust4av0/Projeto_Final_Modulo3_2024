@@ -6,6 +6,7 @@ import java.sql.*;
 
 public class SaveDAO {
 
+
     public static Save novoJogo() throws SQLException {
         Connection conn = BancoDados.getConnection();
         String sql = "INSERT INTO jogos_salvos(idCenaAtual) VALUES (1)";

@@ -11,5 +11,8 @@
     <orderEntry type="library" name="mysql.connector.j" level="project" />
     <orderEntry type="library" name="sparkjava.spark.core" level="project" />
     <orderEntry type="library" name="google.code.gson" level="project" />
+    <orderEntry type="library" name="thymeleaf" level="project" />
+    <orderEntry type="library" name="sparkjava.spark.core1" level="project" />
+    <orderEntry type="library" name="sparkjava.spark.template.thymeleaf" level="project" />
   </component>
 </module>

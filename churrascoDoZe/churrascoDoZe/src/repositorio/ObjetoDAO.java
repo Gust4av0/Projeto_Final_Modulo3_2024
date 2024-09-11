@@ -39,6 +39,7 @@ public class ObjetoDAO {
         return objeto;
     }
 
+
     // Método para listar todos os objetos de uma cena
     public List<Objeto> findObjetosByCena(Integer idCena) throws SQLException {
         Connection conn = BancoDados.getConnection();
@@ -67,4 +68,33 @@ public class ObjetoDAO {
         conn.close();
         return objetos;
     }
+
+
+    public Objeto findObjetoByComandoCorreto(String comandoCorreto) throws SQLException {
+        Connection conn = BancoDados.getConnection();
+        String sql = "SELECT * FROM objetos WHERE comandoCorreto = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, comandoCorreto);
+        ResultSet rs = stmt.executeQuery();
+
+        Objeto objeto = null;
+        if (rs.next()) {
+            objeto = new Objeto();
+            objeto.setIdObjeto(rs.getInt("idObjeto"));
+            objeto.setIdCena(rs.getInt("idCena"));
+            objeto.setNomeObjeto(rs.getString("nomeObjeto"));
+            objeto.setDescricaoObjeto(rs.getString("descricaoObjeto"));
+            objeto.setResultadoPositivo(rs.getString("resultadoPositivo"));
+            objeto.setResultadoNegativo(rs.getString("resultadoNegativo"));
+            objeto.setComandoCorreto(rs.getString("comandoCorreto"));
+            objeto.setProximaCena(rs.getInt("proximaCena"));
+            objeto.setPodeCarregar(rs.getBoolean("podeCarregar"));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+        return objeto;
+    }
 }
+
