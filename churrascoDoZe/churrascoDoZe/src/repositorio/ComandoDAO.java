@@ -9,11 +9,11 @@ import java.sql.SQLException;
 public class ComandoDAO {
 
     public Comando findComandoByNome(String nome) throws SQLException {
-        String sql = "SELECT * FROM comandos WHERE comando = ?";
-        try (Connection connection = BancoDados.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, nome);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        String comandoBanco = "SELECT * FROM comandos WHERE comando = ?";
+        try (Connection conecaoBanco = BancoDados.getConnection();
+             PreparedStatement comandoEnviado = conecaoBanco.prepareStatement(comandoBanco)) {
+            comandoEnviado.setString(1, nome);
+            try (ResultSet resultSet = comandoEnviado.executeQuery()) {
                 if (resultSet.next()) {
                     Comando comando = new Comando();
                     comando.setIdComando(resultSet.getInt("idComando"));

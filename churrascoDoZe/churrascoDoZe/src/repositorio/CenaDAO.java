@@ -10,11 +10,11 @@ public class CenaDAO {
 
     // Método estático para buscar a cena pelo ID
     public static Cena findCenaById(Integer id) throws SQLException {
-        Connection connection = BancoDados.getConnection();
-        String sql = "SELECT * FROM cenas WHERE idCena = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setInt(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        Connection conecaoBanco = BancoDados.getConnection();
+        String comandoBanco = "SELECT * FROM cenas WHERE idCena = ?";
+        PreparedStatement comandoEnviado = conecaoBanco.prepareStatement(comandoBanco);
+        comandoEnviado.setInt(1, id);
+        ResultSet resultSet = comandoEnviado.executeQuery();
 
         Cena cena = null;
         if (resultSet.next()) {
@@ -24,8 +24,8 @@ public class CenaDAO {
         }
 
         resultSet.close();
-        preparedStatement.close();
-        connection.close();
+        comandoEnviado.close();
+        conecaoBanco.close();
         return cena;
     }
 }

@@ -26,7 +26,7 @@ public class BancoDados {
                 System.out.println("Conexão com o banco de dados estabelecida com sucesso!");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Problema ao conectar: " + e);
         }
     }
 }

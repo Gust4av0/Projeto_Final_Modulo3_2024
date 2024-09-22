@@ -1,24 +1,18 @@
 package jogo;
 
 import modelo.*;
-import org.w3c.dom.ls.LSOutput;
 import repositorio.*;
-
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import static spark.Spark.staticFiles;
-
 public class Jogo {
     private static CenaDAO cenaDAO = new CenaDAO();  // Instância de CenaDAO
-    private static ComandoDAO comandoDAO = new ComandoDAO();  // Instância de ComandoDAO
     private static int cenaAtualId = 1; // Cena inicial
 
     public Jogo() throws SQLException {
     }
 
     public static void main(String[] args) throws SQLException {
-        //staticFiles.location("CSS/");
         Scanner scanner = new Scanner(System.in);
         String comando;
 
@@ -29,7 +23,6 @@ public class Jogo {
         System.out.println("------------------------------------------------------------");
         System.out.println("Comandos para Iniciar o Jogo:");
         System.out.println("Digite 1 para iniciar um novo Game!");
-        System.out.println("Digite 2 para listar os Jogos Salvos!");
 
         while (true) {
             System.out.print("> ");
@@ -49,15 +42,11 @@ public class Jogo {
                     mostrarCena(cenaAtualId);
                 }
         } else if (comando.equals("help")) {
-                mostrarAjuda();
-            } else if (comando.startsWith("use") || comando.startsWith("get") || comando.startsWith("check")) {
+                mostrarAjuda(comando);
+            } else if (comando.startsWith("use") || comando.startsWith("get")) {
                 processarComando(comando);
-            } else if (comando.equals("sair")) {
-                System.out.println("Saindo do jogo.");
-                scanner.close();
-                return;
             } else {
-                System.out.println("Comando não reconhecido. \nDigite 1 para iniciar um novo Game! \nDigite 2 para listar os Jogos Salvos! \nOu HELP para obter os comando permitidos no Game!");
+                System.out.println("Comando não reconhecido. \nDigite 1 para iniciar um novo Game! \nOu HELP para obter os comando permitidos no Game!");
             }
         }
     }
@@ -72,32 +61,29 @@ public class Jogo {
                 System.out.println("Cena não encontrada.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Houve algum problema: " + e);
         }
     }
 
 
-    private static void mostrarAjuda() {
+    private static void mostrarAjuda(String comando) {
         try {
             ComandoDAO comandoDAO = new ComandoDAO();
-            Comando comando = comandoDAO.findComandoByNome("help");
+            Comando comandoDigitado = comandoDAO.findComandoByNome(comando);
             if (comando != null) {
-                System.out.println("Descrição do comando 'help': " + comando.getDescricao());
+                System.out.println("Descrição do comando 'help': " + comandoDigitado.getDescricao());
             } else {
                 System.out.println("Ajuda não encontrada.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Erro com o banco de Dados: " + e);
         }
     }
 
 
     private static void processarComando(String comando) {
         try {
-            ComandoDAO comandoDAO = new ComandoDAO();
             ObjetoDAO objetoDAO = new ObjetoDAO();
-            InventarioDAO inventarioDAO = new InventarioDAO();
-            Comando comandoInfo = comandoDAO.findComandoByNome(comando);
 
             switch (comando){
                 case "use mercado":
@@ -106,56 +92,32 @@ public class Jogo {
                     break;
                 case "get carne":
                     Objeto carne = objetoDAO.findObjetoByComandoCorreto(comando);
-                    if (carne != null) {
-                        if (!InventarioDAO.itemJaNoInventario(carne.getIdObjeto())) {
-                            System.out.println(carne.getResultadoPositivo());
-                            InventarioDAO.salvarInventario(carne.getIdObjeto());
-                        } else {
-                            System.out.println("Você já pegou a carne! Verifica o item que resta!");
-                        }
-                    }
+                    InventarioDAO.salvarInventario(carne.getIdObjeto());
+                    System.out.println("Carne adicionada ao inventário");
                     break;
                 case "get cerveja":
                     Objeto cerveja = objetoDAO.findObjetoByComandoCorreto(comando);
-                    if (cerveja != null) {
-                        if (!InventarioDAO.itemJaNoInventario(cerveja.getIdObjeto())) {
-                            System.out.println(cerveja.getResultadoPositivo());
-                            InventarioDAO.salvarInventario(cerveja.getIdObjeto());
-                        } else {
-                            System.out.println("Você já pegou a cerveja! Verifica o item que resta!");
-                        }
-                    }
+                    InventarioDAO.salvarInventario(cerveja.getIdObjeto());
+                    System.out.println("Cerveja adicionada ao inventário");
                     break;
                 case "get fosforo":
                     Objeto fosforo = objetoDAO.findObjetoByComandoCorreto(comando);
-                    if (fosforo != null) {
-                        if (!InventarioDAO.itemJaNoInventario(fosforo.getIdObjeto())) {
-                            System.out.println(fosforo.getResultadoPositivo());
-                            InventarioDAO.salvarInventario(fosforo.getIdObjeto());
-                        } else {
-                            System.out.println("Você já pegou o fósforo! Verifica o item que resta!");
-                        }
-                    }
+                    InventarioDAO.salvarInventario(fosforo.getIdObjeto());
+                    System.out.println("Fósforo adicionado ao inventário");
                     break;
                 case "use casa":
-                    int quantidadeItensInventario = InventarioDAO.contarItensInventario();
-                    if (quantidadeItensInventario >= 3) {
-                        cenaAtualId += 1;
-                        mostrarCena(cenaAtualId);
-                    } else {
-                        System.out.println("OPSSSSSSSSSSSSSSSS! Você não pode voltar para casa antes de pegar os itens para o Churrasco!!!!!");
-                        System.out.println("Você precisa de: Carne, Cerveja e Fósforos!");
-                    }
+                    cenaAtualId += 1;
+                    mostrarCena(cenaAtualId);
                     break;
                 case "use fosforo with churrasqueira":
-                    Objeto objeto4 = objetoDAO.findObjetoByComandoCorreto(comando);
-                    System.out.println(objeto4.getResultadoPositivo());
+                    Objeto fosforoChurrasqueira = objetoDAO.findObjetoByComandoCorreto(comando);
+                    System.out.println(fosforoChurrasqueira.getResultadoPositivo());
                     cenaAtualId += 1;
                     mostrarCena(cenaAtualId);
                     break;
                 case "use carne with grelha":
-                    Objeto objeto5 = objetoDAO.findObjetoByComandoCorreto(comando);
-                    System.out.println(objeto5.getResultadoPositivo());
+                    Objeto carneGrelha = objetoDAO.findObjetoByComandoCorreto(comando);
+                    System.out.println(carneGrelha.getResultadoPositivo());
                     break;
                 case "use cerveja":
                     cenaAtualId += 1;
@@ -168,7 +130,7 @@ public class Jogo {
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Houve algum problema: " + e);
         }
     }
 }

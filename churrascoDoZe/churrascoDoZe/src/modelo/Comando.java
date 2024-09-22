@@ -5,7 +5,6 @@ public class Comando {
     private String comando;
     private String descricao;
 
-    // Getters e Setters
     public Integer getIdComando() {
         return idComando;
     }

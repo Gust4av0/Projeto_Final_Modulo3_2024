@@ -1,45 +1,25 @@
 package repositorio;
 
-import modelo.Inventario;
-import modelo.Save;
-
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class InventarioDAO {
 
-    public static Inventario salvarInventario(int idObjeto) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet generatedKeys = null;
-        Inventario inventario = new Inventario();
+    public static void salvarInventario(int idObjeto) throws SQLException {
+        Connection conecaoBanco = BancoDados.getConnection();
+        PreparedStatement comandoEnviado = null;
 
-            conn = BancoDados.getConnection();
-            String sql = "INSERT INTO inventario(idObjeto) VALUES (?)";
-            stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            stmt.setInt(1, idObjeto);
-
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows > 0) {
-                generatedKeys = stmt.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    inventario.setIdInventario(generatedKeys.getInt(1));
-                    inventario.setIdObjeto(idObjeto);
-                }
-            } else {
-                throw new SQLException("Creating inventario failed, no rows affected.");
-            }
-
-        return inventario;
+            String comandoBanco = "INSERT INTO inventario(idObjeto) VALUES (?)";
+            comandoEnviado = conecaoBanco.prepareStatement(comandoBanco);
+            comandoEnviado.setInt(1, idObjeto);
+            comandoEnviado.execute();
     }
 
 
     public static boolean inventarioVazio() throws SQLException {
-        Connection conn = BancoDados.getConnection();
-        String sql = "SELECT COUNT(*) FROM inventario";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
+        Connection conecaoBanco = BancoDados.getConnection();
+        String comandoBanco = "SELECT COUNT(*) FROM inventario";
+        PreparedStatement comandoEnviado = conecaoBanco.prepareStatement(comandoBanco);
+        ResultSet rs = comandoEnviado.executeQuery();
 
         if (rs.next()) {
             return rs.getInt(1) == 0;  // Retorna true se o inventário estiver vazio
@@ -48,55 +28,12 @@ public class InventarioDAO {
     }
 
 
-    public static int contarItensInventario() throws SQLException {
-        int quantidadeItens = 0;
-        String query = "SELECT COUNT(*) FROM Inventario";
-
-        try (Connection conn = BancoDados.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            if (rs.next()) {
-                quantidadeItens = rs.getInt(1);  // Recupera a quantidade de itens
-            }
-        }
-        return quantidadeItens;
-    }
-
-
-    public static boolean itemJaNoInventario(int idObjeto) throws SQLException {
-        String query = "SELECT COUNT(*) FROM Inventario WHERE idObjeto = ?";
-        boolean jaExiste = false;
-
-        try (Connection conn = BancoDados.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setInt(1, idObjeto);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    jaExiste = rs.getInt(1) > 0;
-                }
-            }
-        }
-        return jaExiste;
-    }
-
-
     public static void limparInventario() throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet generatedKeys = null;
-        Inventario inventario = new Inventario();
+        Connection conecaoBanco = BancoDados.getConnection();
+        PreparedStatement comandoEnviado = null;
 
-        conn = BancoDados.getConnection();
-        String sql = "DELETE FROM inventario";
-        stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-        int affectedRows = stmt.executeUpdate();
-        if (affectedRows > 0) {
-            generatedKeys = stmt.getGeneratedKeys();
-        } else {
-            throw new SQLException("Creating inventario failed, no rows affected.");
-        }
+        String comandoBanco = "DELETE FROM inventario";
+        comandoEnviado = conecaoBanco.prepareStatement(comandoBanco);
+        comandoEnviado.execute();
     }
 }
