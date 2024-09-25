@@ -1,6 +1,6 @@
 package repositorio;
 
-import modelo.Objeto;
+import modelo.Objetos;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,16 +9,16 @@ import java.sql.SQLException;
 
 public class ObjetoDAO {
 
-    public Objeto findObjetoByComandoCorreto(String comandoCorreto) throws SQLException {
+    public Objetos findObjetoByComandoCorreto(String comandoCorreto) throws SQLException {
         Connection conecaoBanco = BancoDados.getConnection();
         String comandoBanco = "SELECT * FROM objetos WHERE comandoCorreto = ?";
         PreparedStatement comandoEnviado = conecaoBanco.prepareStatement(comandoBanco);
         comandoEnviado.setString(1, comandoCorreto);
         ResultSet rs = comandoEnviado.executeQuery();
 
-        Objeto objeto = null;
+        Objetos objeto = null;
         if (rs.next()) {
-            objeto = new Objeto();
+            objeto = new Objetos();
             objeto.setIdObjeto(rs.getInt("idObjeto"));
             objeto.setIdCena(rs.getInt("idCena"));
             objeto.setNomeObjeto(rs.getString("nomeObjeto"));

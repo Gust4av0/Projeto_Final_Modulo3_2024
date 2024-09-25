@@ -3,6 +3,7 @@ package jogo;
 import modelo.*;
 import repositorio.*;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Jogo {
@@ -34,15 +35,17 @@ public class Jogo {
                     System.out.println("----------------------------------------------------");
                     System.out.println("Jogo Iniciado! Digite Help para obter os comandos válidos no Game!");
                     mostrarCena(cenaAtualId);
-                } else{
+                } else {
                     InventarioDAO.limparInventario();
                     System.out.println("Inventário limpo com sucesso! Iniciando novo jogo...");
                     System.out.println("----------------------------------------------------");
                     System.out.println("Jogo Iniciado! Digite Help para obter os comandos válidos no Game!");
                     mostrarCena(cenaAtualId);
                 }
-        } else if (comando.equals("help")) {
+            } else if (comando.equals("help")) {
                 mostrarAjuda(comando);
+            } else if (comando.equals("inventario")) {
+                mostrarInventario();  // Mostra o inventário
             } else if (comando.startsWith("use") || comando.startsWith("get")) {
                 processarComando(comando);
             } else {
@@ -66,7 +69,7 @@ public class Jogo {
     }
 
 
-    private static void mostrarAjuda(String comando) {
+        private static void mostrarAjuda(String comando) {
         try {
             ComandoDAO comandoDAO = new ComandoDAO();
             Comando comandoDigitado = comandoDAO.findComandoByNome(comando);
@@ -77,6 +80,23 @@ public class Jogo {
             }
         } catch (Exception e) {
             System.out.println("Erro com o banco de Dados: " + e);
+        }
+    }
+
+    // Método para mostrar o inventário
+    private static void mostrarInventario() {
+        try {
+            List<Objetos> inventario = InventarioDAO.listarInventario();
+            if (inventario.isEmpty()) {
+                System.out.println("O inventário está vazio.");
+            } else {
+                System.out.println("Itens no inventário:");
+                for (Objetos item : inventario) {
+                    System.out.println("- " + item.getNomeObjeto());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Houve um problema ao acessar o inventário: " + e);
         }
     }
 
@@ -91,17 +111,17 @@ public class Jogo {
                     mostrarCena(cenaAtualId);
                     break;
                 case "get carne":
-                    Objeto carne = objetoDAO.findObjetoByComandoCorreto(comando);
+                    Objetos carne = objetoDAO.findObjetoByComandoCorreto(comando);
                     InventarioDAO.salvarInventario(carne.getIdObjeto());
                     System.out.println("Carne adicionada ao inventário");
                     break;
                 case "get cerveja":
-                    Objeto cerveja = objetoDAO.findObjetoByComandoCorreto(comando);
+                    Objetos cerveja = objetoDAO.findObjetoByComandoCorreto(comando);
                     InventarioDAO.salvarInventario(cerveja.getIdObjeto());
                     System.out.println("Cerveja adicionada ao inventário");
                     break;
                 case "get fosforo":
-                    Objeto fosforo = objetoDAO.findObjetoByComandoCorreto(comando);
+                    Objetos fosforo = objetoDAO.findObjetoByComandoCorreto(comando);
                     InventarioDAO.salvarInventario(fosforo.getIdObjeto());
                     System.out.println("Fósforo adicionado ao inventário");
                     break;
@@ -110,13 +130,13 @@ public class Jogo {
                     mostrarCena(cenaAtualId);
                     break;
                 case "use fosforo with churrasqueira":
-                    Objeto fosforoChurrasqueira = objetoDAO.findObjetoByComandoCorreto(comando);
+                    Objetos fosforoChurrasqueira = objetoDAO.findObjetoByComandoCorreto(comando);
                     System.out.println(fosforoChurrasqueira.getResultadoPositivo());
                     cenaAtualId += 1;
                     mostrarCena(cenaAtualId);
                     break;
                 case "use carne with grelha":
-                    Objeto carneGrelha = objetoDAO.findObjetoByComandoCorreto(comando);
+                    Objetos carneGrelha = objetoDAO.findObjetoByComandoCorreto(comando);
                     System.out.println(carneGrelha.getResultadoPositivo());
                     break;
                 case "use cerveja":

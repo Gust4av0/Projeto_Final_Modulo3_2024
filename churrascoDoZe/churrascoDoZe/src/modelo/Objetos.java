@@ -1,6 +1,6 @@
 package modelo;
 
-public class Objeto {
+public class Objetos {
 
     /**São os mesmos dados que tem na tabela do banco de dados*/
     private Integer idObjeto;

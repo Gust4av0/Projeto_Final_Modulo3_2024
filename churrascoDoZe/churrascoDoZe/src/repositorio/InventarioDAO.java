@@ -1,6 +1,10 @@
 package repositorio;
 
+import modelo.Objetos;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventarioDAO {
 
@@ -36,4 +40,24 @@ public class InventarioDAO {
         comandoEnviado = conecaoBanco.prepareStatement(comandoBanco);
         comandoEnviado.execute();
     }
+
+    public static List<Objetos> listarInventario() throws SQLException {
+        List<Objetos> inventario = new ArrayList<>();
+        Connection conecaoBanco = BancoDados.getConnection();
+        String comandoBanco = "SELECT objetos.idObjeto, objetos.nomeObjeto FROM inventario JOIN objetos ON inventario.idObjeto = objetos.idObjeto";
+        PreparedStatement comandoEnviado = conecaoBanco.prepareStatement(comandoBanco);
+        ResultSet rs = comandoEnviado.executeQuery();
+
+        while (rs.next()) {
+            Objetos objeto = new Objetos();
+            objeto.setIdObjeto(rs.getInt("idObjeto"));
+            objeto.setNomeObjeto(rs.getString("nomeObjeto"));
+            inventario.add(objeto);
+        }
+
+        return inventario;
+    }
+
 }
+
+
