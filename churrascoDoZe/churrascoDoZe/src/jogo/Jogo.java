@@ -105,7 +105,7 @@ public class Jogo {
         try {
             ObjetoDAO objetoDAO = new ObjetoDAO();
 
-            switch (comando){
+            switch (comando){ //irá validar os comandos
                 case "use mercado":
                     cenaAtualId += 1;
                     mostrarCena(cenaAtualId);
