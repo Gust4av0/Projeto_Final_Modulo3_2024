@@ -26,7 +26,7 @@ public class InventarioDAO {
         ResultSet rs = comandoEnviado.executeQuery();
 
         if (rs.next()) {
-            return rs.getInt(1) == 0;  // Retorna true se o inventário estiver vazio
+            return rs.getInt(1) == 0;  // Retorna verdadeiro/true se o inventário estiver vazio
         }
         return true;  // Se houver algum problema, assume-se que está vazio
     }
